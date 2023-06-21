@@ -15,13 +15,13 @@ public class Member extends BaseEntity {
     @Column(name = "USERNAME")
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "TEAM_ID", insertable = false, updatable = false) //insertable, updatable 옵션을 넣어주면 읽기전용
-    private Team team;
+    //@ManyToOne
+    //@JoinColumn(name = "TEAM_ID", insertable = false, updatable = false) //insertable, updatable 옵션을 넣어주면 읽기전용
+    //private Team team;
 
-    @OneToOne // Member -> Locker 1:1
-    @JoinColumn(name = "LOCKER_ID")
-    private Locker locker;
+    //@OneToOne // Member -> Locker 1:1
+    //@JoinColumn(name = "LOCKER_ID")
+    //private Locker locker;
 
     // 다대다는 실무에서 X 불필요한 데이터가 들어올 수 있다. 단순히 연결만 하고 끝나지 않는다. >> OneToMany , MayToOne (연결테이블을 엔티티로 승격)
 //    @ManyToMany
