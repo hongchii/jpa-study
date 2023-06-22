@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@SequenceGenerator(name = "member_seq_generator", sequenceName = "member_seq")
-public class Member extends BaseEntity {
+public class Member {
 
     @Id @GeneratedValue
     @Column(name = "MEMBER_ID")
@@ -15,22 +14,12 @@ public class Member extends BaseEntity {
     @Column(name = "USERNAME")
     private String name;
 
-//    @ManyToOne(fetch = FetchType.LAZY) //지연로딩
-    @ManyToOne(fetch = FetchType.EAGER) //즉시로딩 - 실무에선 가급적 사용하지 말 것.
-    @JoinColumn //(name = "TEAM_ID", insertable = false, updatable = false) //insertable, updatable 옵션을 넣어주면 읽기전용
-    private Team team;
-
-    //@OneToOne // Member -> Locker 1:1
-    //@JoinColumn(name = "LOCKER_ID")
-    //private Locker locker;
-
-    // 다대다는 실무에서 X 불필요한 데이터가 들어올 수 있다. 단순히 연결만 하고 끝나지 않는다. >> OneToMany , MayToOne (연결테이블을 엔티티로 승격)
-//    @ManyToMany
-//    @JoinTable(name = "MEMBER_PRODUCT")
-//    private List<Product> products = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member")
-    private List<MemberProduct> memberProducts = new ArrayList<>();
+    //기간 Period
+    @Embedded
+    private Period workPeriod;
+    //주소
+    @Embedded
+    private Address homeAddress;
 
     public Long getId() {
         return id;
@@ -48,11 +37,19 @@ public class Member extends BaseEntity {
         this.name = name;
     }
 
-    public Team getTeam() {
-        return team;
+    public Period getWorkPeriod() {
+        return workPeriod;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
+    public void setWorkPeriod(Period workPeriod) {
+        this.workPeriod = workPeriod;
+    }
+
+    public Address getHomeAddress() {
+        return homeAddress;
+    }
+
+    public void setHomeAddress(Address homeAddress) {
+        this.homeAddress = homeAddress;
     }
 }
