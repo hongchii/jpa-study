@@ -15,9 +15,10 @@ public class Member extends BaseEntity {
     @Column(name = "USERNAME")
     private String name;
 
-    //@ManyToOne
-    //@JoinColumn(name = "TEAM_ID", insertable = false, updatable = false) //insertable, updatable 옵션을 넣어주면 읽기전용
-    //private Team team;
+//    @ManyToOne(fetch = FetchType.LAZY) //지연로딩
+    @ManyToOne(fetch = FetchType.EAGER) //즉시로딩 - 실무에선 가급적 사용하지 말 것.
+    @JoinColumn //(name = "TEAM_ID", insertable = false, updatable = false) //insertable, updatable 옵션을 넣어주면 읽기전용
+    private Team team;
 
     //@OneToOne // Member -> Locker 1:1
     //@JoinColumn(name = "LOCKER_ID")
@@ -45,5 +46,13 @@ public class Member extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 }
