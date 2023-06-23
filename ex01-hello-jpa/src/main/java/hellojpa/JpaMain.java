@@ -6,6 +6,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -21,49 +24,25 @@ public class JpaMain {
 
         tx.begin();
         try {
-            Member member = new Member();
-            member.setName("member1");
-            member.setHomeAddress(new Address("homeCity", "street", "10000"));
+            // JPQL 테이블이 아닌 객체를 대상으로 검색하는 객체지향쿼리
+//            List<Member> result = em.createQuery("select m From Member m where m.name like '%kim%'",
+//                    Member.class
+//            ).getResultList();
+//
+//            for (Member member : result) {
+//                System.out.println("member = " + member);
+//            }
 
-            member.getFavoriteFoods().add("치킨");
-            member.getFavoriteFoods().add("족발");
-            member.getFavoriteFoods().add("피자");
+            //Criteria 사용 준비 -----> 너무 복잡하고 실용성이 없다..
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Member> query = cb.createQuery(Member.class);
 
-//            member.getAddressHistory().add(new Address("old1", "street", "10000"));
-//            member.getAddressHistory().add(new Address("old2", "street", "10000"));
+            Root<Member> m = query.from(Member.class);
 
-            member.getAddressHistory().add(new AddressEntity("old1", "street", "10000"));
-            member.getAddressHistory().add(new AddressEntity("old2", "street", "10000"));
+            CriteriaQuery<Member> cq = query.select(m).where(cb.equal(m.get("name"), "kim"));
+            List<Member> resultList = em.createQuery(cq)
+                    .getResultList();
 
-            em.persist(member);
-
-            em.flush();
-            em.clear();
-
-            System.out.println("========START===========");
-            Member findMember = em.find(Member.class, member.getId());
-
-            //수정 homeCity > newCity
-//            findMember.getHomeAddress().setCity("newCity"); // 이건 잘못된 방법.
-            Address a = findMember.getHomeAddress();
-            findMember.setHomeAddress(new Address("newCity", a.getStreet(), a.getCity()));
-
-            //치킨 > 한식
-            findMember.getFavoriteFoods().remove("치킨");
-            findMember.getFavoriteFoods().add("한식");
-
-//            findMember.getAddressHistory().remove(new Address("old1", "street", "10000"));
-//            findMember.getAddressHistory().add(new Address("newCity1", "street", "10000"));
-            //조회
-            /*List<Address> addressHistory = findMember.getAddressHistory();
-            for (Address address : addressHistory) {
-                System.out.println("address = " + address.getCity());
-            }
-
-            Set<String> favoriteFoods = findMember.getFavoriteFoods();
-            for (String favoriteFood : favoriteFoods) {
-                System.out.println("favoriteFood = " + favoriteFood);
-            }*/
             tx.commit();
         } catch (Exception e){
             tx.rollback();
