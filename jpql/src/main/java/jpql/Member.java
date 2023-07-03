@@ -19,6 +19,8 @@ public class Member {
         team.getMembers().add(this);
     }
 
+    private MemberType type;
+
     public Long getId() {
         return id;
     }
