@@ -15,6 +15,10 @@ public class Team {
 
     private String name;
 
+    public List<Member> getMembers() {
+        return members;
+    }
+
     @OneToMany(mappedBy = "team")
     private List<Member> members = new ArrayList<>();
 
